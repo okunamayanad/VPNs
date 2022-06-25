@@ -42,7 +42,7 @@ jobs:
             fs
           # The JavaScript snippet to be executed.
           script: |
-            const file = $GITHUB_WORKSPACE/vpn-ipv4.txt;
+            const file = /home/runner/work/VPNs/VPNs/vpn-ipv4.txt;
             const reader = new FileReader();
             var fs = require('fs');
             reader.onload = (event) => {
@@ -65,7 +65,6 @@ jobs:
                 if (timezoneMinutes < 10) timezoneMinutes = "0" + timezoneMinutes
                 const createdAt = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds + " +" + timezoneHours + timezoneMinutes
                 let lastestFile = ['['] 
-                const file = event.target.result;
                 const allLines = file.split(/\r\n|\n/);
                 // Reading line by line
                 allLines.forEach((line) => {
@@ -78,10 +77,9 @@ jobs:
                    lastestFile.push('}')
                 });
                 lastestFile.push(']')
-                fs.writeFile("banned-ips.json", lastestFile, function (err){
+                fs.writeFile("/home/runner/work/VPNs/VPNs/banned-ips.json", lastestFile, function (err){
                   if (err) {
                       console.log(err);
-                  }
-                  })
+                  }})
             };
             
