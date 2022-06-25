@@ -85,7 +85,7 @@ jobs:
                    lastestFile.push('"expires": "forever"')
                    lastestFile.push('"reason": "VPN"')
                    lastestFile.push('}')
-                });
+                }));
                 lastestFile.push(']')
                 
                 fs.writeFile("banned-ips.json", lastestFile, function (err){
