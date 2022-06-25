@@ -43,43 +43,40 @@ jobs:
           # The JavaScript snippet to be executed.
           script: |
             const file = "/home/runner/work/VPNs/VPNs/vpn-ipv4.txt";
-            const reader = new FileReader();
             var fs = require('fs');
-            reader.onload = (event) => {
-                const currentDate = new Date();
-                var year = currentDate.getFullYear()
-                var month = currentDate.getMonth()+1
-                var date = currentDate.getDate()
-                var hours = currentDate.getHours()
-                var minutes = currentDate.getMinutes()
-                var seconds = currentDate.getSeconds()
-                if (hours < 10) hours = "0" + hours
-                if (minutes < 10) minutes = "0" + minutes
-                if (seconds < 10) seconds = "0" + seconds
-                var timezone = currentDate.getTimezoneOffset()
-                var timezoneHours = Math.floor(timezone / 60)
-                var timezoneHoursMinutes = timezoneHours * 60
-                var timezoneMinutes = timezoneHoursMinutes - timezone
-                timezoneHours *= -1
-                if (timezoneHours < 10) timezoneHours = "0" + timezoneHours
-                if (timezoneMinutes < 10) timezoneMinutes = "0" + timezoneMinutes
-                const createdAt = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds + " +" + timezoneHours + timezoneMinutes
-                let lastestFile = ['['] 
-                const allLines = file.split(/\r\n|\n/);
-                // Reading line by line
-                allLines.forEach((line) => {
-                   lastestFile.push('{')
-                   lastestFile.push('"ip": "'+ line +'",')
-                   lastestFile.push('"created": "'+ createdAt +'"')
-                   lastestFile.push('"source": "github.com/ejrv/VPNs"')
-                   lastestFile.push('"expires": "forever"')
-                   lastestFile.push('"reason": "VPN"')
-                   lastestFile.push('}')
-                });
-                lastestFile.push(']')
-                fs.writeFile("/home/runner/work/VPNs/VPNs/banned-ips.json", lastestFile, function (err){
-                  if (err) {
-                      console.log(err);
-                  }})
-            };
+            const currentDate = new Date();
+            var year = currentDate.getFullYear()
+            var month = currentDate.getMonth()+1
+            var date = currentDate.getDate()
+            var hours = currentDate.getHours()
+            var minutes = currentDate.getMinutes()
+            var seconds = currentDate.getSeconds()
+            if (hours < 10) hours = "0" + hours
+            if (minutes < 10) minutes = "0" + minutes
+            if (seconds < 10) seconds = "0" + seconds
+            var timezone = currentDate.getTimezoneOffset()
+            var timezoneHours = Math.floor(timezone / 60)
+            var timezoneHoursMinutes = timezoneHours * 60
+            var timezoneMinutes = timezoneHoursMinutes - timezone
+            timezoneHours *= -1
+            if (timezoneHours < 10) timezoneHours = "0" + timezoneHours
+            if (timezoneMinutes < 10) timezoneMinutes = "0" + timezoneMinutes
+            const createdAt = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds + " +" + timezoneHours + timezoneMinutes
+            let lastestFile = ['['] 
+            const allLines = fs.readFileSync(file).split(/\r\n|\n/);
+            // Reading line by line
+            allLines.forEach((line) => {
+               lastestFile.push('{')
+               lastestFile.push('"ip": "'+ line +'",')
+               lastestFile.push('"created": "'+ createdAt +'"')
+               lastestFile.push('"source": "github.com/ejrv/VPNs"')
+               lastestFile.push('"expires": "forever"')
+               lastestFile.push('"reason": "VPN"')
+               lastestFile.push('}')
+            });
+            lastestFile.push(']')
+            fs.writeFile("/home/runner/work/VPNs/VPNs/banned-ips.json", lastestFile, function (err){
+              if (err) {
+                  console.log(err);
+              }})
             
