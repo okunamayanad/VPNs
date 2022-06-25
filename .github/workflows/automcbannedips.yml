@@ -42,7 +42,7 @@ jobs:
             fs
           # The JavaScript snippet to be executed.
           script: |
-            const file = /home/runner/work/VPNs/VPNs/vpn-ipv4.txt;
+            const file = "/home/runner/work/VPNs/VPNs/vpn-ipv4.txt";
             const reader = new FileReader();
             var fs = require('fs');
             reader.onload = (event) => {
