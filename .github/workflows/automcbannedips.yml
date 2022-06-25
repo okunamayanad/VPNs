@@ -1,0 +1,96 @@
+# This is a basic workflow to help you get started with Actions
+
+name: IPV4 to Minecraft Banned IPs
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Execute JavaScript inline
+        # You may pin to the exact commit or the version.
+        # uses: satackey/action-js-inline@bf6fcaf35de1ed03bcfd25a0a8b1fa4c551ec908
+        uses: satackey/action-js-inline@v0.0.2
+        with:
+          # The package manager used to install the required packages.
+          # package-manager: # default is npm
+          # Required package to run JavaScript snippet.
+          required-packages: # optional
+            fs
+          # The JavaScript snippet to be executed.
+          script: |
+            const file = $GITHUB_WORKSPACE/vpn-ipv4.txt;
+            const reader = new FileReader();
+            var fs = require('fs');
+            
+            reader.onload = (event) => {
+            
+                const currentDate = new Date();
+
+                var year = currentDate.getFullYear()
+                var month = currentDate.getMonth()+1
+                var date = currentDate.getDate()
+                var hours = currentDate.getHours()
+                var minutes = currentDate.getMinutes()
+                var seconds = currentDate.getSeconds()
+
+                if (hours < 10) hours = "0" + hours
+                if (minutes < 10) minutes = "0" + minutes
+                if (seconds < 10) seconds = "0" + seconds
+
+                var timezone = currentDate.getTimezoneOffset()
+                var timezoneHours = Math.floor(timezone / 60)
+                var timezoneHoursMinutes = timezoneHours * 60
+                var timezoneMinutes = timezoneHoursMinutes - timezone
+                timezoneHours *= -1
+                if (timezoneHours < 10) timezoneHours = "0" + timezoneHours
+                if (timezoneMinutes < 10) timezoneMinutes = "0" + timezoneMinutes
+
+
+                const createdAt = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds + " +" + timezoneHours + timezoneMinutes
+
+                
+                let lastestFile = ['['] 
+                const file = event.target.result;
+                const allLines = file.split(/\r\n|\n/);
+                // Reading line by line
+                allLines.forEach((line) => {
+                   lastestFile.push('{')
+                   lastestFile.push('"ip": "'+ line +'",')
+                   lastestFile.push('"created": "'+ createdAt +'"')
+                   lastestFile.push('"source": "github.com/ejrv/VPNs"')
+                   lastestFile.push('"expires": "forever"')
+                   lastestFile.push('"reason": "VPN"')
+                   lastestFile.push('}')
+                });
+                lastestFile.push(']')
+                
+                fs.writeFile("banned-ips.json", lastestFile, function (err){
+                  if (err) {
+                      console.log(err);
+                  }
+            };
+            
